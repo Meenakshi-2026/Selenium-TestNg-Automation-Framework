@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-current.dtd">
+<suite name="Selenium Test Suite" thread-count="1" parallel="tests">
+    
+    <listeners>
+        <listener class-name="utils.TestListener"/>
+    </listeners>
+    
+    <test name="Login Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="tests.LoginTest"/>
+        </classes>
+    </test>
+    <test name="Smoke Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="tests.SampleTest"/>
+        </classes>
+    </test>
+</suite>
