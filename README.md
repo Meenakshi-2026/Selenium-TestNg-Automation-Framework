@@ -1,176 +1,142 @@
-# TestNG Selenium Automation Framework
+# Selenium TestNG Automation Framework
 
-A complete automation testing framework using TestNG and Selenium WebDriver with Page Object Model design pattern.
+Project: Selenium TestNG Automation Framework
 
-## Project Structure
+This README is written in simple language. It explains what the project contains and how to run tests and view reports.
+
+---
+
+## Project structure
 
 ```
-TestNG_Selenium_Proj/
+Selenium-TestNg-Automation-Framework/
 ├── src/
 │   ├── test/
 │   │   ├── java/
-│   │   │   ├── tests/              # Test classes
-│   │   │   ├── pages/              # Page Object Model classes
-│   │   │   └── utils/              # Utility classes
-│   │   └── resources/              # Configuration files and test data
+│   │   │   ├── tests/         # Test classes (extend BaseTest)
+│   │   │   ├── pages/         # Page Object Model classes
+│   │   │   └── utils/         # Utility classes (report, listeners, helpers)
+│   │   └── resources/         # config.properties, test data
 │   └── main/
-│       └── java/
-│           └── com/qa/utils/       # Reusable utility classes
-├── pom.xml                         # Maven configuration
-├── testng.xml                      # TestNG configuration
-└── README.md                       # This file
+├── pom.xml                    # Maven dependencies and build
+├── testng.xml                 # TestNG suite and listeners
+├── README.md
+└── target/                    # Build and test output
 ```
 
-## Folder Description
+---
 
-### src/test/java/tests
-Contains all test classes. Each test class extends `BaseTest` to inherit setup and teardown methods.
+## Folder descriptions (plain language)
 
-### src/test/java/pages
-Contains Page Object classes following Page Object Model pattern. Each page class extends `BasePage`.
+- `src/test/java/tests/` : Put your test files here. Each test should extend `BaseTest` so browser setup and teardown happen automatically.
+- `src/test/java/pages/` : Put page classes here. A page class contains locators and actions for a page (keeps tests clean).
+- `src/test/java/utils/` : Helpers and utilities live here (report setup, listener that takes screenshots, config reader, etc.).
+- `src/test/resources/` : Configuration files like `config.properties` and test data files.
+- `target/` : Generated files after running tests (reports, compiled classes).
 
-### src/test/java/utils
-Contains utility classes:
-- **BaseTest**: Base class with setUp and tearDown methods
-- **WebDriverUtils**: Common Selenium WebDriver methods for interaction
+---
 
-### src/test/resources
-Contains:
-- **config.properties**: Configuration settings (browser, URLs, waits)
-- **log4j2.xml**: Logging configuration
+## Prerequisites (what you need installed)
 
-## Prerequisites
+- Java 11 or newer
+- Maven (run `mvn -v` to check)
+- Chrome or Firefox browser installed
+- Optional: an IDE (VS Code, IntelliJ, Eclipse)
 
-- Java 11 or higher
-- Maven 3.6 or higher
-- Chrome/Firefox browser
-- IDE (Eclipse, IntelliJ IDEA, or VS Code)
+---
 
-## Dependencies
+## Dependencies (what the project uses)
 
-The project includes:
-- Selenium WebDriver 4.15.0
-- TestNG 7.8.1
-- WebDriverManager 5.6.3
-- Log4j 2.20.0
-- Apache Commons IO
-- Gson
+These are in `pom.xml` (Maven will download them):
+- Selenium WebDriver
+- TestNG
+- WebDriverManager (auto-downloads browser drivers)
+- ExtentReports (for HTML reports)
+- Log4j (logging)
 
-## How to Run Tests
+---
 
-### Using Maven
+## How to run tests (easy steps)
+
+1. Open a terminal in the project root folder.
+2. To run all tests:
+
 ```bash
-# Run all tests
 mvn test
-
-# Run specific test class
-mvn test -Dtest=SampleTest
-
-# Run with specific browser
-mvn test -Dbrowser=firefox
 ```
 
-### Using TestNG XML
+3. To run a single test class (example):
+
+```bash
+mvn -Dtest=SampleTest test
+```
+
+4. To run tests defined in `testng.xml`:
+
 ```bash
 mvn test -DsuiteXmlFile=testng.xml
 ```
 
-### Using IDE
-- Right-click on test class or testng.xml
-- Select "Run As" > "TestNG Test"
+---
 
-## Creating New Test Cases
+## Configuration (what to change)
 
-1. Create a new test class in `src/test/java/tests/`
-2. Extend `BaseTest` class
-3. Use page objects for element interactions
-4. Write test methods with `@Test` annotation
-
-Example:
-```java
-public class LoginTest extends BaseTest {
-    
-    @Test
-    public void testValidLogin() {
-        navigateToURL("https://app.com");
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login("user@example.com", "password123");
-        Assert.assertTrue(loginPage.isLoginSuccessful());
-    }
-}
-```
-
-## Creating New Page Objects
-
-1. Create a new class in `src/test/java/pages/`
-2. Extend `BasePage` class
-3. Define locators using `By` class
-4. Create methods for page actions
+Open `src/test/resources/config.properties` and edit values like:
+- `browser` = chrome or firefox
+- `app.url` = the website URL your tests should open
+- `implicit.wait`, `explicit.wait` = wait times in seconds
+- `report.path` = folder where HTML reports are written (default: `test-reports/`)
 
 Example:
-```java
-public class LoginPage extends BasePage {
-    
-    private By emailField = By.id("email");
-    private By passwordField = By.id("password");
-    private By loginButton = By.xpath("//button[@type='submit']");
-    
-    public LoginPage(WebDriver driver) {
-        super(driver);
-    }
-    
-    public void login(String email, String password) {
-        utils.sendKeys(emailField, email);
-        utils.sendKeys(passwordField, password);
-        utils.click(loginButton);
-    }
-}
+```
+browser=chrome
+app.url=https://www.google.com
+report.path=test-reports/
 ```
 
-## Configuration
+---
 
-Edit `src/test/resources/config.properties` to configure:
-- Browser type (chrome/firefox)
-- Application URL
-- Wait times
-- Log level
+## Reports and screenshots (how it works)
 
-## Logging
+- After tests run, an HTML report is created in the folder set by `report.path` (default `test-reports/`).
+- If a test fails, a screenshot is saved to `<report-path>/screenshots/` and the image is embedded in the HTML report.
+- To view the report: open the generated `ExtentReport_*.html` file in your browser.
 
-Logs are written to:
-- Console output
-- `logs/test-logs.log` file
+Quick check after a failed test:
+```bash
+# list screenshots
+ls test-reports/screenshots
+# open report (on Windows you can double-click the HTML file)
+```
 
-## Best Practices
+Notes:
+- The screenshot code expects your tests to have a `protected WebDriver driver;` field (this is in `BaseTest`). If your tests use a different driver variable name, update the listener or add a `getDriver()` method in your BaseTest.
 
-1. Use Page Object Model pattern for maintainability
-2. Use explicit waits instead of implicit waits
-3. Use descriptive test names
-4. Use assertions to validate test results
-5. Keep page locators in page classes
-6. Use utility methods for common actions
-7. Add test descriptions with `@Test(description="")`
-8. Handle exceptions gracefully
+---
 
-## Troubleshooting
+## Troubleshooting (common problems and fixes)
 
-### WebDriver not found
-- Ensure WebDriverManager dependency is added
-- Clear Maven cache: `mvn clean install`
+- Tests fail to start: check Java and Maven versions.
+- Browser driver errors: WebDriverManager usually fixes drivers automatically. Ensure an internet connection the first time.
+- Screenshot not found in report:
+  1. After a failure, check `test-reports/screenshots` for PNG files.
+  2. If files exist but not visible, open the HTML report file directly with your browser (file://).
+  3. If no PNGs are saved, make sure tests extend `BaseTest` and `driver` is a field.
 
-### Tests fail to run
-- Check Java version: `java -version`
-- Verify Maven installation: `mvn -version`
-- Rebuild project: `mvn clean build`
+---
 
-### Timeouts
-- Increase wait times in config.properties
-- Check if elements are present in DOM
-- Verify element locators are correct
+## Best practices (short list)
 
-## Contact & Support
+- Keep tests small and focused.
+- Use page classes to hide selectors and actions.
+- Use explicit waits for elements.
+- Add assertions to verify expected behavior.
+- Keep configuration in `config.properties`.
 
-For issues or questions, please refer to:
-- [Selenium Documentation](https://www.selenium.dev/documentation/)
-- [TestNG Documentation](https://testng.org/doc/)
-- [WebDriverManager GitHub](https://github.com/bonigarcia/webdrivermanager)
+---
+
+If you want, I can also add a short example showing how to add `getDriver()` to your `BaseTest` or show a failing-test screenshot flow. Tell me which example you prefer.
+
+***
+
+Simple README created.

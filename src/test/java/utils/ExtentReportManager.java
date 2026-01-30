@@ -21,11 +21,22 @@ public class ExtentReportManager {
     public static void initReport() {
         if (extent == null) {
             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date());
-            String reportPath = "test-reports/ExtentReport_" + timestamp + ".html";
-            
+            String reportDir = "test-reports";
+            try {
+                String cfg = ConfigReader.get("report.path");
+                if (cfg != null && !cfg.isEmpty()) reportDir = cfg.replaceAll("\\\\$", "");
+            } catch (Exception ignored) {}
+
+            // ensure directory ends without separator
+            if (reportDir.endsWith("/") || reportDir.endsWith("\\")) {
+                reportDir = reportDir.substring(0, reportDir.length() - 1);
+            }
+
+            String reportPath = reportDir + "/ExtentReport_" + timestamp + ".html";
+
             // Create directories if they don't exist
-            new File("test-reports").mkdirs();
-            
+            new File(reportDir).mkdirs();
+
             ExtentSparkReporter reporter = new ExtentSparkReporter(reportPath);
             reporter.config().setTheme(Theme.DARK);
             reporter.config().setDocumentTitle("TestNG Selenium Test Report");
