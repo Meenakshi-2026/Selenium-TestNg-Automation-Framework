@@ -134,9 +134,3 @@ Notes:
 - Keep configuration in `config.properties`.
 
 ---
-
-If you want, I can also add a short example showing how to add `getDriver()` to your `BaseTest` or show a failing-test screenshot flow. Tell me which example you prefer.
-
-***
-
-Simple README created.
